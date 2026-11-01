@@ -323,6 +323,9 @@ body[data-mode="light"] .holo{box-shadow:0 1px 0 rgba(10,30,82,.04)}
 .live3d .rec{width:9px;height:9px;border-radius:50%;background:#FF3B5C;box-shadow:0 0 10px #FF3B5C;animation:recBlink 1s steps(1,end) infinite;flex:none}
 .live3d .lbl{animation:lblGlow 1.8s ease-in-out infinite}
 .live3d .lbl,.live3d .go{white-space:nowrap}
+.hero-3d{container-type:inline-size}
+@container (max-width:560px){.live3d .cnt{display:none}}
+@container (max-width:380px){.live3d{font-size:9.5px;letter-spacing:.06em}}
 .live3d .go{display:inline-flex;align-items:center;gap:6px;margin-left:4px;padding:6px 11px;border-radius:999px;background:var(--btn);color:#fff;font-weight:700;letter-spacing:.08em;position:relative;overflow:hidden}
 .live3d .go::after{content:'';position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);transform:translateX(-120%);animation:goShine 2.4s ease-in-out infinite}
 .live3d .go svg{width:9px;height:9px}
