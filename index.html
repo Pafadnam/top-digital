@@ -88,6 +88,9 @@ p{margin:0}
 button{font:inherit;color:inherit}
 .wrap{max-width:1320px;margin-inline:auto;padding-left:var(--gl);padding-right:var(--gr)}
 .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hp{position:absolute!important;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);z-index:120;background:var(--bg-3);color:var(--fg);border:1px solid var(--line-strong);padding:10px 16px;border-radius:12px;font-size:13.5px;font-weight:600;box-shadow:0 12px 30px var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:calc(100vw - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
 .skip{position:fixed;left:-999px;top:8px;z-index:200;background:var(--accent);color:var(--accent-ink);padding:8px 14px;border-radius:6px}
 .skip:focus{left:16px}
 :focus-visible{outline:2px solid var(--accent-2);outline-offset:3px;border-radius:4px}
@@ -1459,9 +1462,9 @@ body[data-mode="light"] .holo{box-shadow:0 1px 0 rgba(10,30,82,.04)}
         </div>
         <div class="wstep" data-s="3" hidden>
           <p class="q">Vos coordonnées</p>
-          <div class="field"><label for="wName">Votre nom</label><input class="input" id="wName" autocomplete="name" placeholder="Ex. Aminata Ouédraogo"></div>
-          <div class="field"><label for="wBiz">Votre activité</label><input class="input" id="wBiz" placeholder="Ex. Restaurant à Abidjan"></div>
-          <div class="field"><label for="wMail">E-mail (facultatif)</label><input class="input" id="wMail" type="email" autocomplete="email" placeholder="vous@exemple.com"></div>
+          <div class="field"><label for="wName">Votre nom</label><input class="input" id="wName" autocomplete="name" maxlength="80" placeholder="Ex. Aminata Ouédraogo"></div>
+          <div class="field"><label for="wBiz">Votre activité</label><input class="input" id="wBiz" maxlength="120" placeholder="Ex. Restaurant à Abidjan"></div>
+          <div class="field"><label for="wMail">E-mail (facultatif)</label><input class="input" id="wMail" type="email" autocomplete="email" maxlength="120" placeholder="vous@exemple.com"><div class="hp" aria-hidden="true"><label for="wHp">Ne pas remplir</label><input id="wHp" name="website" type="text" tabindex="-1" autocomplete="off"></div></div>
           <label class="consent"><input type="checkbox" id="wConsent"><span>J'accepte que TOP Digital conserve mon e-mail pour me recontacter et m'envoyer ses offres. Désinscription possible à tout moment.</span></label>
           <p class="summary" id="wSummary"></p>
           <p class="msg" id="wMsg" aria-live="polite"></p>
@@ -1487,8 +1490,9 @@ body[data-mode="light"] .holo{box-shadow:0 1px 0 rgba(10,30,82,.04)}
       <form class="nl" id="nlForm" novalidate>
         <h4>Recevez nos conseils digitaux</h4>
         <p>Une fois par mois : astuces pour vendre en ligne et offres réservées aux abonnés.</p>
-        <div class="nl-row"><label class="sr" for="nlMail">Votre e-mail</label><input class="input" id="nlMail" type="email" autocomplete="email" placeholder="vous@exemple.com" required><button class="btn btn--sm" type="submit">Je m'inscris</button></div>
+        <div class="nl-row"><label class="sr" for="nlMail">Votre e-mail</label><input class="input" id="nlMail" type="email" autocomplete="email" maxlength="120" placeholder="vous@exemple.com" required><button class="btn btn--sm" type="submit">Je m'inscris</button></div>
         <label class="consent"><input type="checkbox" id="nlConsent" required><span>J'accepte de recevoir les e-mails de TOP Digital. Désinscription possible à tout moment.</span></label>
+        <div class="hp" aria-hidden="true"><label for="nlHp">Ne pas remplir</label><input id="nlHp" name="website" type="text" tabindex="-1" autocomplete="off"></div>
         <p class="msg" id="nlMsg" aria-live="polite"></p>
       </form>
     </div>
@@ -1522,6 +1526,7 @@ body[data-mode="light"] .holo{box-shadow:0 1px 0 rgba(10,30,82,.04)}
 <div class="modal" id="modal" aria-hidden="true"><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="mTitle"><div id="mShot"></div><div class="modal-body"><div style="display:flex;justify-content:space-between;gap:12px;align-items:start"><span class="eyebrow" id="mTag"></span><button class="icon-btn" id="mClose" type="button" aria-label="Fermer"><svg><use href="#i-x"/></svg></button></div><h3 id="mTitle"></h3><p id="mDesc"></p><ul id="mList"></ul><a class="btn" href="#contact" id="mCta">Je veux un projet comme celui-ci <svg class="arr"><use href="#i-arr"/></svg></a></div></div></div>
 
 <div class="cursor" id="cursor" aria-hidden="true"><b></b><i></i></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 const LOGO={"vb":[-188.0,-50.0,925.54,429.24],"T":"M0,0 H250 L220.88,80 H100 V316.60 L0,353 Z","TOP":"M232.08087832400568 245.0 268.9646061336563 143.66279069767444H224.06693171505162L238.13903670266933 105.0H389.01345530732056L374.9413503197028 143.66279069767444H329.5878619476098L292.70413413795916 245.0ZM438.95813608217696 246.62790697674419Q415.0279035240374 246.62790697674419 400.64975853039107 244.49127906976744Q386.2716135367448 242.3546511627907 379.5026309599053 237.47093023255815Q372.73364838306577 232.5872093023256 371.93573168523255 224.44767441860466Q371.13781498739934 216.3081395348837 374.67000970809136 204.0988372093023Q378.2022044287833 191.88953488372093 384.2754286865973 175.20348837209303Q390.34865294441124 158.5174418604651 395.70410347905676 146.3081395348837Q401.05955401370227 134.09883720930233 407.8195994036577 125.85755813953489Q414.57964479361317 117.61627906976744 424.9407173278182 112.63081395348837Q435.30178986202327 107.6453488372093 451.2352727753537 105.50872093023256Q467.1687556886841 103.37209302325581 491.09898824682364 103.37209302325581Q515.0292208049632 103.37209302325581 529.4073657986096 105.50872093023256Q543.7855107922559 107.6453488372093 550.5174615138648 112.63081395348837Q557.2494122354736 117.61627906976744 558.0102970780763 125.85755813953489Q558.771181920679 134.09883720930233 555.238987199987 146.3081395348837Q551.706792479295 158.5174418604651 545.633568221481 175.20348837209303Q539.560343963667 191.88953488372093 534.2048934290216 204.0988372093023Q528.8494428943761 216.3081395348837 522.1264293596512 224.44767441860466Q515.4034158249262 232.5872093023256 505.07937514595176 237.47093023255815Q494.7553344669773 242.3546511627907 478.82185155364687 244.49127906976744Q462.8883686403165 246.62790697674419 438.95813608217696 246.62790697674419ZM452.4377313861055 209.59302325581396Q458.36331278145434 209.59302325581396 462.15795183028365 209.18604651162792Q465.9525908791129 208.77906976744185 468.71021684187184 207.15116279069767Q471.4678428046308 205.52325581395348 473.7126174999081 201.86046511627907Q475.9573921951855 198.19767441860466 478.5553379066863 191.68604651162792Q481.1532836181872 185.17441860465118 484.78240543078334 175.20348837209303Q488.48559095384064 165.02906976744185 490.59069085662253 158.61918604651163Q492.6957907594044 152.2093023255814 493.1543414959589 148.44476744186048Q493.61289223251333 144.68023255813955 492.0773174923633 142.95058139534885Q490.5417427522133 141.22093023255815 487.0433585452286 140.81395348837208Q483.54497433824395 140.40697674418604 477.6193929428951 140.40697674418604Q471.92171852429044 140.40697674418604 468.0131259870891 140.81395348837208Q464.1045334498877 141.22093023255815 461.3098756318982 142.95058139534885Q458.5152178139087 144.68023255813955 456.23341126340074 148.44476744186048Q453.95160471289284 152.2093023255814 451.39069085662254 158.61918604651163Q448.82977700035224 165.02906976744185 445.12659147729494 175.20348837209303Q441.4974696646988 185.17441860465118 439.3553379066864 191.68604651162792Q437.21320614867386 198.19767441860466 436.79168726734997 201.86046511627907Q436.3701683860261 205.52325581395348 437.9427749814067 207.15116279069767Q439.5153815767873 208.77906976744185 443.1277192721441 209.18604651162792Q446.7400569675009 209.59302325581396 452.4377313861055 209.59302325581396ZM550.8436690216801 245.0 601.7995018189484 105.0H696.6088041445298Q713.7018274003437 105.0 722.960639185287 108.05232558139535Q732.2194509702304 111.1046511627907 735.390385465115 117.10755813953489Q738.5613199599995 123.11046511627907 737.0517088032014 132.2674418604651Q735.5420976464034 141.42441860465118 731.0982750187345 153.63372093023256Q727.0247709433715 164.82558139534882 722.1706188458718 173.77906976744185Q717.3164667483721 182.7325581395349 709.7786312589603 189.0406976744186Q702.2407957695485 195.34883720930233 690.5350236167071 198.7063953488372Q678.8292514638656 202.06395348837208 661.2804142545633 202.06395348837208H627.0943677429353L611.4669248356336 245.0ZM639.8333259422525 167.06395348837208H648.2658840817874Q654.1914654771361 167.06395348837208 657.7581975492212 166.65697674418604Q661.3249296213063 166.25 663.4016925765131 164.92732558139534Q665.4784555317199 163.6046511627907 667.0480830648057 160.8575581395349Q668.6177105978917 158.11046511627907 670.2471122280369 153.63372093023256Q671.9505775686432 148.95348837209303 672.3436383627777 146.30813953488374Q672.7366991569121 143.66279069767444 671.6227644377002 142.34011627906978Q670.5088297184884 141.0174418604651 667.238352488248 140.61046511627907Q663.9678752580074 140.20348837209303 658.0422938626585 140.20348837209303H649.6097357231237Z","DIG":"M147.87441860465117 353.0 179.17585875154455 267.0H211.61339963087778Q224.41090891686207 267.0 232.1650942867351 268.06532179911073Q239.91927965660813 269.1306435982214 243.6346370989111 271.8209653973321Q247.34999454121407 274.5112871964428 247.68918968547018 279.3862871964428Q248.0283848297263 284.2612871964428 245.87307156186762 291.75987629688746Q243.71775829400895 299.2584653973321 239.8081594282974 310.0Q235.89753351170248 320.7443564017786 232.5943203164515 328.2429455022233Q229.2911071212005 335.7415346026679 225.4032021928489 340.6165346026679Q221.51529726449732 345.49153460266785 215.84154571124677 348.18185640177853Q210.1677941579962 350.87217820088927 201.63863146398245 351.93608910044463Q193.1094687699687 353.0 180.31195948398437 353.0ZM168.6632596608019 339.91336506669705H183.13122349644996Q191.7657599096378 339.91336506669705 197.48532125059853 339.66195416714174Q203.20488259155923 339.4105432675864 206.91044704980624 338.0425977653631Q210.61601150805325 336.6746522631399 213.2481976289348 333.5097266560255Q215.8803837498164 330.34480104891117 218.30454347709377 324.6992753106829Q220.7287032043712 319.05374957245465 224.0219444554783 310.0056435982214Q227.31730165630682 300.9517240999079 228.94287301141998 295.30286421035817Q230.5684443665331 289.6540043208084 230.2404317954747 286.4882651292789Q229.91241922441634 283.3225259377494 227.13449981318087 281.95458043552617Q224.3565804019454 280.58663493330295 218.90116980575598 280.33663493330295Q213.44575920956657 280.08663493330295 204.9259813255386 280.08663493330295H190.43840864283425ZM291.5834859085662 273.74915916087105 296.54227431002846 260.125H312.1478209979774L307.1890325965152 273.74915916087105ZM262.98289520433354 353.0 286.18599763880394 289.25H301.0584751214171L277.8553726869467 353.0ZM335.72551913938645 379.2387128035572Q330.9334399314656 379.2387128035572 326.20650478112657 379.0498019040018Q321.4795696307875 378.86089100444644 317.46279640754403 378.5441583057804Q313.4460231843005 378.22742560711436 310.90663149818505 377.9689602097822L315.0122881529822 366.68876125869343Q317.23474971924657 366.8109394595827 320.98443879662705 366.933117660472Q324.7341278740076 367.0552958613613 328.8725861682559 367.1163849618059Q333.0110444625043 367.1774740622506 336.3763290651722 367.1774740622506Q344.2393610740651 367.1774740622506 349.0474261020932 366.36050197672307Q353.8554911301213 365.5435298911955 356.8476487480324 363.529239862939Q359.83980636594345 361.51494983468245 361.80882177628996 357.8029157700091Q363.7778371866365 354.0908817053358 365.9317806835146 348.172970584882L367.1796941909472 344.7443564017786H366.54058519539365Q363.1567164052978 348.23299276541496 359.09291542878384 350.10662008582Q355.0291144522699 351.98024740622503 350.44163591112124 352.7203711093376Q345.85415736997254 353.4604948124501 340.7141114259289 353.4604948124501Q333.58513517741955 353.4604948124501 329.2181127712562 351.9008166115608Q324.8510903650928 350.34113841067153 323.08455847110525 346.71896020978227Q321.31802657711773 343.09678200889294 322.2178405412815 336.84678200889294Q323.1176545054452 330.59678200889294 326.53192955345764 321.21613841067153Q329.9896467789866 311.71613841067153 333.68149202111147 305.34678200889294Q337.3733372632364 298.97742560711436 341.879335783621 295.23306920533577Q346.3853343040056 291.4887128035572 351.90660888013167 289.8693564017786Q357.42788345625775 288.25 364.5540379056564 288.25Q368.9982622434362 288.25 373.16540588362 288.99576730133396Q377.33254952380383 289.7415346026679 380.2489550176931 291.79618896565063Q383.1653605115823 293.85084332863335 384.1052897863509 297.84396020978227H384.8722205810151L388.500166291844 289.25H402.2363565780143L381.71239936684026 345.63910899555356Q378.4459107163948 354.6137128035572 375.15618534153555 360.9816583057804Q371.86645996667625 367.3496038080036 366.9643145908893 371.413514707559Q362.0621692151023 375.47742560711436 354.6734730679068 377.35806920533577Q347.28477692071124 379.2387128035572 335.72551913938645 379.2387128035572ZM351.67466506555434 340.7403944818151Q357.206721287588 340.7403944818151 361.0550327175222 339.5698252764793Q364.9033441474564 338.39925607114355 367.39747124459416 336.40207787025423Q370.3485201031987 333.9246522631399 372.12451648852766 330.10185554668794Q373.90051287385666 326.279058830236 375.8291225091864 320.9802474062251Q377.84667060131585 315.4370795804355 378.9377105322452 311.432426462205Q380.02875046317456 307.4277733439745 378.70408509737774 305.0781695359708Q377.6929412570054 303.0725259377494 374.66216929229927 302.0838131341922Q371.63139732759316 301.09510033063503 366.11530353341567 301.09510033063503Q360.42225508498603 301.09510033063503 356.7081673461321 301.7727240337476Q352.99407960727814 302.4503477368601 350.5441368714361 304.48604064530844Q348.09419413559397 306.5217335537567 346.09683088143197 310.47517386843003Q344.09946762727 314.4286141831034 341.7148681482241 320.9802474062251Q339.3302686691783 327.5318806293467 338.4493590093696 331.48532094402003Q337.5684493495609 335.43876125869343 338.5581589844246 337.41195416714174Q339.54786861928835 339.38514707559 342.766512770712 340.06277077870254Q345.9851569221356 340.7403944818151 351.67466506555434 340.7403944818151ZM447.5052903221597 273.74915916087105 452.4640787236219 260.125H468.0696254115709L463.11083701010864 273.74915916087105ZM418.904699617927 353.0 442.1078020523974 289.25H456.98027953501054L433.77717710054014 353.0ZM480.7829288113843 353.0 499.55163012724086 301.4334169421959H484.4858879085657L488.92028902717954 289.25H503.98603124585475L510.71948057977943 270.75H525.589136263282L518.8556869293571 289.25H536.165785549811L531.7313844311971 301.4334169421959H514.4212858107433L495.65258449488675 353.0ZM563.1814940070365 354.0Q555.9849475903577 354.0 551.6035900360088 352.3082673013339Q547.2222324816598 350.61653460266785 546.1238246441544 346.6094801048911Q545.0254168066491 342.60242560711436 547.6187047257959 335.47742560711436Q550.3009311017423 328.10806920533577 553.7486239316847 323.7373019040018Q557.1963167616273 319.3665346026679 562.7134655064635 317.43326730133396Q568.2306142512998 315.5 576.9068237987171 315.5Q578.2733584013849 315.5 581.1280922821684 315.50141089955537Q583.9828261629517 315.50282179911073 587.7012729109908 315.56532179911073Q591.4197196590301 315.62782179911073 595.2229297499382 315.69032179911073Q599.0261398408462 315.75282179911073 602.2052473695667 315.87782179911073L603.1303083202979 313.3362377253573Q604.8183552959122 308.69836677687834 604.9787551876789 306.0447283662068Q605.1391550794456 303.3910899555353 603.4256160623847 302.20539033844904Q601.712077045324 301.0196907213628 597.5633859882671 300.72655383177937Q593.4146949312103 300.4334169421959 586.6504366779 300.4334169421959Q583.2261063763074 300.4334169421959 578.8003062774884 300.6195060426405Q574.3745061786694 300.80559514308516 570.4729380450999 301.0541842435298Q566.5713699115304 301.3027733439745 564.6936939645246 301.5527733439745L568.8479280512553 290.13910899555356Q575.2006110890786 289.13910899555356 582.2724240546647 288.6945544977768Q589.344237020251 288.25 596.6728512033543 288.25Q604.9181320531244 288.25 610.1044847473954 289.1931435982214Q615.2908374416666 290.1362871964428 617.8841165423685 292.1433416942196Q620.4773956430705 294.1503961919964 621.0704173130634 297.1574506897731Q621.6634389830565 300.1645051875499 620.7187884917173 304.2937378862159Q619.774138000378 308.422970584882 617.819852092964 313.79232698666056L603.5494261612662 353.0H589.8075922768744L592.2990491498534 344.7810397902178H591.4822063978551Q587.5148373950602 348.90321799110706 582.5634498461773 350.8961634933303Q577.6120622972943 352.88910899555356 572.557808934924 353.4445544977768Q567.5035555725535 354.0 563.1814940070365 354.0ZM574.4098706389711 342.6089100444647Q578.1620543750769 342.6089100444647 581.443569265916 342.11314274313077Q584.7250841567552 341.6173754417968 587.4118220765238 340.4439844373503Q590.0985599962922 339.27059343290387 591.9492026167044 337.29598962490024Q594.032029310536 335.077029415118 595.6122347759376 332.3637128035572Q597.1924402413393 329.6503961919964 598.3599377394538 326.44272317865693L598.9212988541038 324.9003961919964H577.1631327384955Q572.4843839577915 324.9003961919964 569.7585766980402 325.5183416942196Q567.0327694382889 326.1362871964428 565.5415323782526 328.0568564017786Q564.0502953182162 329.97742560711436 562.6046848899852 333.9492076160073Q561.2107330463376 337.779058830236 561.6089638509897 339.5732171360164Q562.0071946556417 341.3673754417968 564.9818341311526 341.98814274313077Q567.9564736066635 342.6089100444647 574.4098706389711 342.6089100444647ZM643.6624062383171 353.0 677.4661417457907 260.125H692.3386192284038L658.5348837209303 353.0Z","pix":[[-70,3,57,"royal"],[-60,73,46,"deep"],[-133,31,44,"royal"],[-122,-50,34,"cyan"],[-188,-6,31,"cyan"]]};
@@ -1537,6 +1542,41 @@ const sstore={get(k){try{return sessionStorage.getItem(k)}catch(_){return null}}
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), lerp=(a,b,t)=>a+(b-a)*t, ease=t=>1-Math.pow(1-t,3), easeIO=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
 const enc=encodeURIComponent, fmt=n=>Math.round(n).toLocaleString('fr-FR').replace(/ | /g,' ');
 const waUrl=t=>`https://wa.me/${WA}?text=${enc(t)}`;
+
+/* =============== SECURITY · anti-abuse (client side) =============== */
+// Server side protections live in netlify.toml (CSP, headers, rate limit) and Netlify's own spam filter.
+const SEC=(()=>{
+  const T0=performance.now(); let human=false;
+  ['pointerdown','keydown','touchstart','wheel'].forEach(ev=>addEventListener(ev,e=>{ if(e.isTrusted) human=true; },{passive:true,capture:true}));
+  let tt; const toast=msg=>{ const el=document.getElementById('toast'); if(!el) return; el.textContent=msg; el.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('show'),2800); };
+  // 1. click-flood guard: more than 14 activations in 2 s locks interactions for 4 s
+  const hits=[]; let lockUntil=0;
+  document.addEventListener('click',e=>{
+    const t=e.target&&e.target.closest&&e.target.closest('button,a,[role="tab"],.wcard,.opt,.filt,label'); if(!t) return;
+    const n=performance.now();
+    if(n<lockUntil){ e.preventDefault(); e.stopImmediatePropagation(); return; }
+    hits.push(n); while(hits.length&&n-hits[0]>2000) hits.shift();
+    if(hits.length>14){ lockUntil=n+4000; hits.length=0; e.preventDefault(); e.stopImmediatePropagation(); toast('Trop de clics d\'affilée : patientez quelques secondes.'); }
+  },true);
+  // 2. per-action cooldown for heavy actions (3D rebuild, audio, theme…)
+  const last={}; const cool=(k,ms)=>{ const n=performance.now(); if(last[k]&&n-last[k]<ms) return false; last[k]=n; return true; };
+  // 3. form gate: honeypot, minimum time, real human input, per-browser quota
+  const QK='td-sub'; let memQ=[];
+  const readQ=()=>{ try{ const a=JSON.parse(localStorage.getItem(QK)||'[]'); return Array.isArray(a)?a:memQ; }catch(_){ return memQ; } };
+  const writeQ=a=>{ memQ=a; try{ localStorage.setItem(QK,JSON.stringify(a)); }catch(_){ } };
+  function formCheck(hpEl,key){
+    if(hpEl&&hpEl.value) return 'bot';
+    if(!human||performance.now()-T0<3000) return 'bot';
+    const now=Date.now(), a=readQ().filter(x=>x&&now-x.t<864e5);
+    if(key&&a.some(x=>x.k===key)) return 'dup';
+    if(a.filter(x=>now-x.t<6e5).length>=3||a.length>=8) return 'quota';
+    return 'ok';
+  }
+  function record(key){ const now=Date.now(); writeQ([...readQ().filter(x=>x&&now-x.t<864e5),{t:now,k:key}]); }
+  const clean=(v,max)=>String(v==null?'':v).replace(/[\u0000-\u001F\u007F<>]/g,' ').replace(/\s+/g,' ').trim().slice(0,max||200);
+  const EMAIL=/^[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9-]{1,63}(\.[A-Za-z0-9-]{1,63})*\.[A-Za-z]{2,24}$/;
+  return {toast,cool,formCheck,record,clean,EMAIL};
+})();
 const BRAND=['#0A3FC2','#0B5CF5','#3A7BFF','#00AEEF','#5BC8F5','#8FE3FF'];
 
 /* =============== preferences: theme + effects =============== */
@@ -1545,7 +1585,7 @@ function hostMode(){const t=root.getAttribute('data-theme'); if(t==='light'||t==
 let mode=store.get('td-mode')||hostMode();
 function applyMode(m,save){mode=m; body.dataset.mode=m; const b=$('#themeBtn'); b.innerHTML=`<svg><use href="#i-${m==='dark'?'sun':'moon'}"/></svg>`; b.setAttribute('aria-label',m==='dark'?'Passer en mode clair':'Passer en mode sombre'); if(save) store.set('td-mode',m); window.dispatchEvent(new Event('td-mode'));}
 applyMode(mode,false);
-$('#themeBtn').addEventListener('click',()=>applyMode(mode==='dark'?'light':'dark',true));
+$('#themeBtn').addEventListener('click',()=>SEC.cool('theme',350)&&applyMode(mode==='dark'?'light':'dark',true));
 matchMedia('(prefers-color-scheme: light)').addEventListener?.('change',()=>{if(!store.get('td-mode')) applyMode(hostMode(),false)});
 new MutationObserver(()=>{if(!store.get('td-mode')) applyMode(hostMode(),false)}).observe(root,{attributes:true,attributeFilter:['data-theme']});
 
@@ -1553,7 +1593,7 @@ const lowEnd=(navigator.hardwareConcurrency||8)<=2||(navigator.deviceMemory||8)<
 let fx=store.get('td-fx')||(lowEnd?'lite':'full');
 function applyFx(v,save){fx=v; body.classList.toggle('fx-off',v==='lite'); [['#fxLbl','#fxBtn'],['#fxLbl2','#fxBtn2']].forEach(([l,b])=>{const L=$(l),B=$(b); if(L) L.textContent=l==='#fxLbl'?'Effets':(v==='full'?'Effets : complets':'Effets : réduits'); if(B){B.setAttribute('aria-pressed',v==='full'); B.title=v==='full'?'Réduire les effets visuels':'Activer tous les effets';}}); if(save) store.set('td-fx',v); window.dispatchEvent(new Event('td-fx'));}
 applyFx(fx,false);
-['#fxBtn','#fxBtn2'].forEach(s=>$(s).addEventListener('click',()=>applyFx(fx==='full'?'lite':'full',true)));
+['#fxBtn','#fxBtn2'].forEach(s=>$(s).addEventListener('click',()=>SEC.cool('fx',600)&&applyFx(fx==='full'?'lite':'full',true)));
 const FULL=()=>fx==='full';
 
 /* =============== WhatsApp links =============== */
@@ -1846,7 +1886,7 @@ function wGo(i){ wStep=clamp(i,0,W_N-1); $$('.wstep',wiz).forEach(s=>s.hidden=+s
   $('#wPrev').hidden=wStep===0; $('#wNext').hidden=wStep===W_N-1; $('#wSend').hidden=wStep!==W_N-1; $('#wizStatus').textContent=`Étape ${wStep+1} sur ${W_N}`; if(wStep===W_N-1){wUpdate(); $('#wName').focus();} }
 $('#wNext').addEventListener('click',()=>wGo(wStep+1)); $('#wPrev').addEventListener('click',()=>wGo(wStep-1));
 wiz.addEventListener('input',wUpdate); wiz.addEventListener('submit',e=>e.preventDefault());
-$('#wSend').addEventListener('click',()=>{ const mail=$('#wMail').value.trim(); if(mail&&$('#wConsent').checked&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) saveLead(mail,'devis',{need:choice('need'),budget:choice('budget'),when:choice('when'),name:$('#wName').value.trim(),activity:$('#wBiz').value.trim()},$('#wMsg'),true); });
+$('#wSend').addEventListener('click',()=>{ const mail=$('#wMail').value.trim(); if(!SEC.cool('wsend',3000)) return; if(mail&&$('#wConsent').checked&&SEC.EMAIL.test(mail)) saveLead(mail,'devis',{need:choice('need'),budget:choice('budget'),when:choice('when'),name:$('#wName').value.trim(),activity:$('#wBiz').value.trim()},$('#wMsg'),true); });
 document.addEventListener('click',e=>{const a=e.target.closest('[data-need]'); if(!a) return; const [v,act]=a.dataset.need.split('|'); setChoice('need',v); if(act) $('#wBiz').value=act; wGo(1);});
 wGo(0);
 
@@ -1854,19 +1894,28 @@ wGo(0);
 let DB=null, USER=null, UID=null;
 const capReady=(async()=>{ try{ if(!window.claude||!window.claude.use) return; USER=await window.claude.use('user'); DB=await window.claude.use('db'); if(USER) UID=await USER.id(); if(DB&&USER){ const own=await USER.isOwner(), ed=await USER.canEdit(); if(own||ed) startAdmin(); } }catch(_){ } })();
 async function saveLead(email,source,extra,msgEl,quiet){
+  email=SEC.clean(email,120).toLowerCase();
+  if(!SEC.EMAIL.test(email)){ if(!quiet){ msgEl.className='msg err'; msgEl.textContent='Entrez une adresse e-mail valide, par exemple vous@exemple.com.'; } return false; }
+  const okMsg=source==='devis'?'Votre e-mail est enregistré. Envoyez maintenant votre demande sur WhatsApp.':'Merci ! Votre inscription est enregistrée.';
+  const gate=SEC.formCheck($(source==='devis'?'#wHp':'#nlHp'),source+':'+email);
+  if(gate==='bot'||gate==='dup'){ msgEl.className='msg ok'; msgEl.textContent=okMsg; return true; }
+  if(gate==='quota'){ msgEl.className='msg err'; msgEl.textContent='Plusieurs envois ont déjà été faits depuis cet appareil. Réessayez plus tard ou écrivez-nous sur WhatsApp.'; return false; }
+  const ex={}; Object.entries(extra||{}).forEach(([k,v])=>{ ex[k]=SEC.clean(v,160); }); extra=ex;
+  SEC.record(source+':'+email);
   await capReady;
   const fallback=()=>{ msgEl.className='msg err'; msgEl.innerHTML=`L'inscription n'a pas pu être enregistrée pour le moment. <a href="${waUrl(`Bonjour TOP Digital, je souhaite recevoir vos conseils et offres. Mon e-mail : ${email}`)}" target="_blank" rel="noopener">Envoyez-nous votre adresse sur WhatsApp</a>.`; };
   if(!DB||!UID){
     // hosted version (Netlify Forms): post to the hidden form of the same name
-    if(!window.claude&&/^https?:$/.test(location.protocol)){ try{ const body=new URLSearchParams({'form-name':source==='devis'?'devis':'inscription',email,source,consentement:'Oui, accepte de recevoir les e-mails de TOP Digital',date:new Date().toISOString(),...(extra||{})}); const r=await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}); if(!r.ok) throw new Error(r.status); msgEl.className='msg ok'; msgEl.textContent=source==='devis'?'Votre e-mail est enregistré. Envoyez maintenant votre demande sur WhatsApp.':'Merci ! Votre inscription est enregistrée.'; return true; }catch(_){ } }
+    if(!window.claude&&/^https?:$/.test(location.protocol)){ try{ const body=new URLSearchParams({'form-name':source==='devis'?'devis':'inscription','bot-field':'',email,source,consentement:'Oui, accepte de recevoir les e-mails de TOP Digital',date:new Date().toISOString(),...(extra||{})}); const r=await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}); if(!r.ok) throw new Error(r.status); msgEl.className='msg ok'; msgEl.textContent=source==='devis'?'Votre e-mail est enregistré. Envoyez maintenant votre demande sur WhatsApp.':'Merci ! Votre inscription est enregistrée.'; return true; }catch(_){ } }
     if(!quiet) fallback(); return false; }
   try{ await DB.doc('leads/'+UID).set({email,source,consent:true,consentText:'Accepte de recevoir les e-mails de TOP Digital',at:new Date().toISOString(),...(extra||{})}); msgEl.className='msg ok'; msgEl.textContent=source==='devis'?'Votre e-mail est enregistré. Envoyez maintenant votre demande sur WhatsApp.':'Merci ! Votre inscription est enregistrée.'; return true; }
   catch(e){ fallback(); return false; }
 }
 $('#nlForm').addEventListener('submit',e=>{ e.preventDefault(); const m=$('#nlMail').value.trim(), msg=$('#nlMsg');
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m)){ msg.className='msg err'; msg.textContent='Entrez une adresse e-mail valide, par exemple vous@exemple.com.'; $('#nlMail').focus(); return; }
+  if(!SEC.cool('nl',2500)) return;
+  if(!SEC.EMAIL.test(m)){ msg.className='msg err'; msg.textContent='Entrez une adresse e-mail valide, par exemple vous@exemple.com.'; $('#nlMail').focus(); return; }
   if(!$('#nlConsent').checked){ msg.className='msg err'; msg.textContent='Cochez la case de consentement pour vous inscrire.'; return; }
-  msg.className='msg'; msg.textContent='Enregistrement…'; saveLead(m,'newsletter',{},msg,false); });
+  msg.className='msg'; msg.textContent='Enregistrement…'; const sb=$('#nlForm button[type=submit]'); sb.disabled=true; saveLead(m,'newsletter',{},msg,false).finally(()=>setTimeout(()=>{ sb.disabled=false; },3000)); });
 let leads=[];
 function startAdmin(){ const btn=$('#adminBtn'); btn.hidden=false; btn.addEventListener('click',openDrawer); $('#drawerClose').addEventListener('click',closeDrawer);
   try{ DB.collection('leads').onSnapshot(s=>{ leads=s.docs.map(d=>d.data()).filter(Boolean).sort((a,b)=>(b.at||'').localeCompare(a.at||'')); $('#adminCount').textContent=leads.length; renderLeads(); },()=>{}); }catch(_){}
@@ -1967,11 +2016,11 @@ async function playIntro(){
   })(t0);
 }
 let mouse={x:-9,y:-9}; addEventListener('pointermove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;},{passive:true});
-$('#replayIntro').addEventListener('click',()=>{ scrollTo({top:0}); playIntro(); });
+$('#replayIntro').addEventListener('click',()=>{ if(!SEC.cool('intro',4000)) return; scrollTo({top:0}); playIntro(); });
 
 /* =============== 3D HERO (Three.js, lazy) =============== */
 let three=null;
-function load3D(){ if(window.THREE) return Promise.resolve(window.THREE); return new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'; s.onload=()=>window.THREE?res(window.THREE):rej(); s.onerror=rej; document.head.appendChild(s); }); }
+function load3D(){ if(window.THREE) return Promise.resolve(window.THREE); return new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'; s.integrity='sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu'; s.crossOrigin='anonymous'; s.referrerPolicy='no-referrer'; s.onload=()=>window.THREE?res(window.THREE):rej(); s.onerror=rej; document.head.appendChild(s); }); }
 function show3DFallback(on){ $('#fallback3d').hidden=!on; $('#scene3d').style.visibility=on?'hidden':'visible'; }
 let init3DP=null;
 function init3D(){ if(three) return; if(!init3DP) init3DP=init3DReal(); return init3DP; }
@@ -2046,7 +2095,7 @@ async function init3DReal(){
   // interaction
   let mx=0,my=0,tmx=0,tmy=0, spin=0, boomT=-1;
   addEventListener('pointermove',e=>{ const r=cv.getBoundingClientRect(); tmx=clamp((e.clientX-r.left)/r.width*2-1,-1.3,1.3); tmy=clamp((e.clientY-r.top)/r.height*2-1,-1.3,1.3); },{passive:true});
-  $('#hero3d').addEventListener('click',()=>{ if(boomT<0) boomT=U.uT.value; });
+  $('#hero3d').addEventListener('click',()=>{ if(boomT<0&&SEC.cool('boom',1500)) boomT=U.uT.value; });
   function resize(){ const w=cv.clientWidth,h=cv.clientHeight; if(!w||!h) return; R.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix(); cam.position.z=w/h<.9?31:25; }
   new ResizeObserver(resize).observe(cv); resize();
   let vis=true; new IntersectionObserver(es=>vis=es[0].isIntersecting).observe(cv);
@@ -2074,7 +2123,7 @@ async function init3DReal(){
 
 addEventListener('td-page',e=>{ if(e.detail==='accueil') init3D(); });
 const rb=$('#replay3d');
-rb.addEventListener('click',()=>{ init3D(); rb.classList.add('busy'); $('#replayLbl').textContent='Fusion en cours…'; clearTimeout(rb._t);
+rb.addEventListener('click',e=>{ if(rb.classList.contains('busy')){ e.stopPropagation(); return; } init3D(); rb.classList.add('busy'); $('#replayLbl').textContent='Fusion en cours…'; clearTimeout(rb._t);
   rb._t=setTimeout(()=>{ rb.classList.remove('busy'); $('#replayLbl').textContent="Rejouer l'animation"; },4800);
   const sv=$('#fallback3d svg'); if(sv&&!$('#fallback3d').hidden){ sv.style.animation='none'; void sv.offsetWidth; sv.style.animation=''; } });
 
@@ -2118,12 +2167,12 @@ function ttsAt(i){ clearTimeout(A.timer); A.gen++; const g=A.gen; if(TTS) speech
   const est=Math.max(2200,(l.end-l.start)*1000);
   if(TTS&&!A.muted){ const u=new SpeechSynthesisUtterance(l.text.replace(/TOP Digital/g,'Top Digital')); u.lang='fr-FR'; if(A.voice) u.voice=A.voice; u.rate=.95; u.pitch=1.05; u.onend=next; u.onerror=()=>{ if(g===A.gen) A.timer=setTimeout(()=>ttsAt(A.i+1),est); }; speechSynthesis.speak(u); }
   else A.timer=setTimeout(()=>{ if(g===A.gen&&A.on&&!A.paused) ttsAt(A.i+1); },est); }
-['#listenBtn','#listenBtn2'].forEach(s=>$(s).addEventListener('click',()=>{ setMenu(false); A.on?stopAudio():startAudio(); }));
+['#listenBtn','#listenBtn2'].forEach(s=>$(s).addEventListener('click',()=>{ if(!SEC.cool('listen',900)) return; setMenu(false); A.on?stopAudio():startAudio(); }));
 $('#aStop').addEventListener('click',stopAudio);
-$('#aPlay').addEventListener('click',()=>{ A.paused=!A.paused; setIcons(); if(A.mode==='file'){ if(A.paused){ A.el&&A.el.pause(); cancelAnimationFrame(A.raf); } else playFile(); } else { if(A.paused){ A.gen++; clearTimeout(A.timer); if(TTS) speechSynthesis.cancel(); } else ttsAt(A.i); } });
-$('#aMute').addEventListener('click',()=>{ A.muted=!A.muted; setIcons(); $('#aNote').textContent=noteText(); if(A.mode==='file'){ if(A.el) A.el.muted=A.muted; } else if(A.on&&!A.paused) ttsAt(A.i); });
+$('#aPlay').addEventListener('click',()=>{ if(!SEC.cool('aplay',250)) return; A.paused=!A.paused; setIcons(); if(A.mode==='file'){ if(A.paused){ A.el&&A.el.pause(); cancelAnimationFrame(A.raf); } else playFile(); } else { if(A.paused){ A.gen++; clearTimeout(A.timer); if(TTS) speechSynthesis.cancel(); } else ttsAt(A.i); } });
+$('#aMute').addEventListener('click',()=>{ if(!SEC.cool('amute',250)) return; A.muted=!A.muted; setIcons(); $('#aNote').textContent=noteText(); if(A.mode==='file'){ if(A.el) A.el.muted=A.muted; } else if(A.on&&!A.paused) ttsAt(A.i); });
 function seekTo(r){ r=Math.min(1,Math.max(0,r)); if(A.mode==='file'&&A.el){ try{ A.el.currentTime=r*AUD.dur; }catch(_){ } A.lastPage=null; A.i=-1; if(!A.paused) playFile(); else { audTick(); cancelAnimationFrame(A.raf); } } else if(A.mode==='tts'){ ttsAt(Math.floor(r*(AUD.lines.length-1))); } }
-seek.addEventListener('click',e=>{ const r=seek.getBoundingClientRect(); seekTo((e.clientX-r.left)/r.width); });
+seek.addEventListener('click',e=>{ if(!SEC.cool('seek',150)) return; const r=seek.getBoundingClientRect(); seekTo((e.clientX-r.left)/r.width); });
 seek.addEventListener('keydown',e=>{ if(!A.el) return; const t=A.el.currentTime; if(e.key==='ArrowRight'){ e.preventDefault(); seekTo((t+5)/AUD.dur); } else if(e.key==='ArrowLeft'){ e.preventDefault(); seekTo((t-5)/AUD.dur); } });
 
 /* =============== boot =============== */

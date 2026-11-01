@@ -1,16 +1,34 @@
 # TOP Digital — configuration Netlify (site statique, aucune dépendance)
+# Fichier généré : la politique de sécurité (CSP) contient l'empreinte exacte du script du site.
 [build]
   publish = "."
   # Remplace __SITE_URL__ par l'adresse réelle du site (domaine Netlify ou domaine personnalisé)
-  command = "sed -i \"s#__SITE_URL__#${URL}#g\" index.html robots.txt sitemap.xml"
+  command = "sed -i \"s#__SITE_URL__#${URL}#g\" index.html robots.txt sitemap.xml .well-known/security.txt"
 
+# ---- Limitation du nombre de requêtes (anti-robots, anti-inondation) ----
+# Au-delà de 240 requêtes par minute depuis une même adresse IP, Netlify répond 429 (trop de requêtes).
+# Une visite normale en génère environ 10 à 20 ; le seuil reste large pour les réseaux mobiles partagés.
+[[redirects]]
+  from = "/*"
+  to = "/:splat"
+  status = 200
+    [redirects.rate_limit]
+    window_limit = 240
+    window_size = 60
+    aggregate_by = ["ip", "domain"]
+
+# ---- En-têtes de sécurité ----
 [[headers]]
   for = "/*"
   [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-P/3s5nWdzaSuSxUtmTLUoYCgWa+tBquk6ebUqz/YHsc=' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; media-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
     X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    X-Frame-Options = "SAMEORIGIN"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Cross-Origin-Opener-Policy = "same-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=(), hid=(), midi=(), magnetometer=(), gyroscope=(), accelerometer=(), display-capture=(), browsing-topics=()"
+    X-Permitted-Cross-Domain-Policies = "none"
 
 [[headers]]
   for = "/audio/*"

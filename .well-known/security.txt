@@ -1,0 +1,5 @@
+# Signaler une faille de sécurité sur le site de TOP Digital
+Contact: mailto:topdigital226@gmail.com
+Expires: 2027-11-01T00:00:00.000Z
+Preferred-Languages: fr, en
+Canonical: __SITE_URL__/.well-known/security.txt
